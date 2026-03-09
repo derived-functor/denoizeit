@@ -4,10 +4,8 @@ from pathlib import Path
 import torch
 import torchaudio
 
-from src.pipeline.abc import Stage
 
-
-def _preprocess(
+def preprocess(
     wav_path: str | Path,
     target_sr: int,
     n_fft: int,
@@ -52,30 +50,3 @@ def _preprocess(
     noisy_in = noisy_spec.unsqueeze(1)[:, :, :256, :]
 
     return noisy_in, win
-
-
-class PreprocessStage(Stage[str | Path, tuple[torch.Tensor, torch.Tensor]]):
-    """Preprocessing stage of pipeline
-
-    1. Resamples audio to target_sr
-    2. Mixing the channels to 1 by meaning.
-    3. Normalizes volume to 1.0 to avoid clipping.
-    4. Performs STFT and cuts off 257-th bin of spectrogram.
-    """
-
-    def __init__(self, target_sr: int, n_fft: int, hop_len: int, device: str) -> None:
-        self.target_sr = target_sr
-        self.n_fft = n_fft
-        self.hop_len = hop_len
-        self.device = device
-
-        super().__init__(self._run)
-
-    def _run(self, wav_path: str | Path) -> tuple[torch.Tensor, torch.Tensor]:
-        return _preprocess(
-            wav_path,
-            self.target_sr,
-            self.n_fft,
-            self.hop_len,
-            self.device,
-        )

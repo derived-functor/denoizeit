@@ -1,8 +1,7 @@
 import pytest
-import torchaudio
 import torch
 
-from src.pipeline.postprocess import PostprocessStage
+from src.pipeline.postprocess import postprocess
 
 
 class TestPostprocessStage:
@@ -14,16 +13,10 @@ class TestPostprocessStage:
     def win(self, device: str) -> torch.Tensor:
         return torch.load("tests/data/win.pth", device)
 
-    @pytest.fixture
-    def postprocess(
-        self, noisy_in: torch.Tensor, win: torch.Tensor, device: str
-    ) -> PostprocessStage:
-        return PostprocessStage(noisy_in, win, device)
-
     def test_postprocess(
-        self, postprocess: PostprocessStage, mask: torch.Tensor, noisy_in: torch.Tensor
+        self, mask: torch.Tensor, noisy_in: torch.Tensor, win: torch.Tensor, device: str
     ):
-        denoised_wav = postprocess(mask).cpu()
+        denoised_wav = postprocess(mask, noisy_in, win, device).cpu()
 
         assert not denoised_wav.is_complex()
         assert denoised_wav.dtype == torch.float32

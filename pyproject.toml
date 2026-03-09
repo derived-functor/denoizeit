@@ -8,6 +8,7 @@ dependencies = [
     "complexpytorch>=0.4",
     "numpy>=2.2.6",
     "pydantic-settings>=2.13.1",
+    "sounddevice>=0.5.5",
     "torch>=2.10.0",
     "torchaudio>=2.10.0",
     "torchcodec>=0.10.0",

@@ -1,6 +1,8 @@
 """All about main pipeline"""
 
-from .abc import Stage
-from .preprocess import PreprocessStage
+from .pipeline import DenoisingShortFilePipeline
+from .inference import inference
+from .preprocess import preprocess
+from .postprocess import postprocess
 
-__all__ = ["Stage", "PreprocessStage"]
+__all__ = ["DenoisingShortFilePipeline", "inference", "preprocess", "postprocess"]

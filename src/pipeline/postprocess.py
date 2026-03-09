@@ -2,10 +2,8 @@
 
 import torch
 
-from .abc import Stage
 
-
-def _postprocess(
+def postprocess(
     mask: torch.Tensor, noisy_in: torch.Tensor, win: torch.Tensor, device: str
 ) -> torch.Tensor:
     """Postprocessing function
@@ -34,21 +32,3 @@ def _postprocess(
     )
 
     return denoised_wav
-
-
-class PostprocessStage(Stage[torch.Tensor, torch.Tensor]):
-    """Postprocessing stage
-    1. Applying mask to noisy signal.
-    2. Filling 257-th bin of spectrogram with zeros
-    3. Performs iSTFT
-    """
-
-    def __init__(self, noisy_in: torch.Tensor, win: torch.Tensor, device: str):
-        self.noisy_in = noisy_in
-        self.win = win
-        self.device = device
-
-        super().__init__(self._run)
-
-    def _run(self, mask: torch.Tensor) -> torch.Tensor:
-        return _postprocess(mask, self.noisy_in, self.win, self.device)

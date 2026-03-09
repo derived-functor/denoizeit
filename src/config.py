@@ -7,6 +7,7 @@ from pydantic_settings import (
     SettingsConfigDict,
     YamlConfigSettingsSource,
 )
+import torch
 
 
 class PreprocessingConfig(BaseModel):
@@ -24,6 +25,7 @@ class Config(BaseSettings):
         yaml_file="config.yaml", yaml_file_encoding="utf-8"
     )
     preprocessing: PreprocessingConfig = PreprocessingConfig()
+    device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
     # pylint: disable=R0913,R0917
     @classmethod

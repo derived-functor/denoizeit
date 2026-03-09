@@ -6,6 +6,7 @@ in
 pkgs.mkShell {
   buildInputs = with pkgs; [
     ffmpeg_7
+    portaudio
     stdenv.cc.cc.lib
     zlib
     cuda.cudatoolkit
@@ -15,6 +16,7 @@ pkgs.mkShell {
   shellHook = ''
     export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [
       pkgs.ffmpeg_7
+      pkgs.portaudio
       pkgs.stdenv.cc.cc.lib
       pkgs.zlib
       cuda.cudatoolkit

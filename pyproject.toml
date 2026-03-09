@@ -1,0 +1,24 @@
+[project]
+name = "denoizeit"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.6",
+    "dotenv>=0.9.9",
+    "pylint>=3.3.8",
+    "pytest>=8.4.2",
+    "pytest-cov>=6.2.1",
+    "black",
+    "isort"
+]
+
+[tool.coverage.run]
+omit = [
+    "**/abc.py",
+    "config.py",
+]

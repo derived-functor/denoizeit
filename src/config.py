@@ -1,43 +1,35 @@
 """Configuration of project"""
 
+from pathlib import Path
+import yaml
 from pydantic import BaseModel
-from pydantic_settings import (
-    BaseSettings,
-    PydanticBaseSettingsSource,
-    SettingsConfigDict,
-    YamlConfigSettingsSource,
-)
-import torch
+from pydantic_settings import BaseSettings
 
 
 class PreprocessingConfig(BaseModel):
     """Config for preprocessing"""
 
-    target_sr: int = 16000
-    n_fft: int = 512
-    hop_len: int = 160
+    target_sr: int
+    n_fft: int
+    hop_len: int
+
+
+class Common(BaseModel):
+    """Common options"""
+
+    device: str
+    model_checkpoint: str
 
 
 class Config(BaseSettings):
     """Main config"""
 
-    model_config = SettingsConfigDict(
-        yaml_file="config.yaml", yaml_file_encoding="utf-8"
-    )
-    preprocessing: PreprocessingConfig = PreprocessingConfig()
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
-
-    # pylint: disable=R0913,R0917
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        return (YamlConfigSettingsSource(settings_cls),)
+    preprocessing: PreprocessingConfig
+    common: Common
 
 
-config = Config()
+def get_config(path: str | Path) -> Config:
+    """Reads config file"""
+    with open(path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return Config(**data)

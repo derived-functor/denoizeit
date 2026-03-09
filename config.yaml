@@ -1,5 +1,7 @@
 preprocessing:
-  targetSr: 16000
-  nFft: 512
-  hopLen: 160
-device: cuda
+  target_sr: 16000
+  n_fft: 512
+  hop_len: 160
+common:
+  device: cuda
+  model_checkpoint: data/checkpoint.pth

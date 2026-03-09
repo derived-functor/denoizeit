@@ -1,11 +1,11 @@
 from pathlib import Path
 import torch
-from src.config import config
+from src.config import Config
 from src.pipeline.preprocess import preprocess
 
 
 class TestPreprocessStage:
-    def test_dimensions(self, noisy_path: Path):
+    def test_dimensions(self, noisy_path: Path, config: Config):
         noisy_in, win = preprocess(
             noisy_path,
             config.preprocessing.target_sr,

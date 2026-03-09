@@ -1,7 +1,13 @@
 import pytest
 import torch
+from src.config import Config, get_config
 from src.model import UNet
 from pathlib import Path
+
+
+@pytest.fixture
+def config() -> Config:
+    return get_config("config.yaml")
 
 
 @pytest.fixture
@@ -29,5 +35,5 @@ def clean_path() -> Path:
 @pytest.fixture
 def model(device: str) -> UNet:
     model = UNet()
-    model.load_state_dict(torch.load("data/best_unet.pth"))
+    model.load_state_dict(torch.load("data/checkpoint.pth"))
     return model.to(device)

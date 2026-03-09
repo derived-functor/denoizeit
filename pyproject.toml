@@ -8,10 +8,12 @@ dependencies = [
     "complexpytorch>=0.4",
     "numpy>=2.2.6",
     "pydantic-settings>=2.13.1",
+    "rich>=14.3.3",
     "sounddevice>=0.5.5",
     "torch>=2.10.0",
     "torchaudio>=2.10.0",
     "torchcodec>=0.10.0",
+    "typer>=0.24.1",
 ]
 
 [dependency-groups]

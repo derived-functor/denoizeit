@@ -4,8 +4,8 @@ from pathlib import Path
 
 import torch
 
+from src.config import Config
 from src.model.unet import UNet
-from src.config import config
 from .preprocess import preprocess
 from .inference import inference
 from .postprocess import postprocess
@@ -14,20 +14,21 @@ from .postprocess import postprocess
 class DenoisingShortFilePipeline:
     """Pipeline for denoising short audio files"""
 
-    def __init__(self, model: UNet) -> None:
+    def __init__(self, model: UNet, config: Config) -> None:
         self.model = model
+        self.config = config
 
     def __call__(self, wav_path: str | Path) -> torch.Tensor:
         noisy_in, win = preprocess(
             wav_path,
-            config.preprocessing.target_sr,
-            config.preprocessing.n_fft,
-            config.preprocessing.hop_len,
-            config.device,
+            self.config.preprocessing.target_sr,
+            self.config.preprocessing.n_fft,
+            self.config.preprocessing.hop_len,
+            self.config.common.device,
         )
 
         mask = inference(self.model, noisy_in)
 
-        denoised = postprocess(mask, noisy_in, win, config.device)
+        denoised = postprocess(mask, noisy_in, win, self.config.common.device)
 
         return denoised

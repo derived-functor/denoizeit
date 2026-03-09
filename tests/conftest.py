@@ -17,6 +17,11 @@ def noisy_path() -> Path:
 
 
 @pytest.fixture
+def noisy_in(device: str) -> torch.Tensor:
+    return torch.load("tests/data/noisy_in.pth", map_location=device)
+
+
+@pytest.fixture
 def clean_path() -> Path:
     return Path("tests/data/clean_audio.wav")
 

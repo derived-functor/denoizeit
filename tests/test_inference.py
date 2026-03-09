@@ -9,10 +9,6 @@ class TestInferenceStage:
     def inference(self, model: UNet) -> InferenceStage:
         return InferenceStage(model)
 
-    @pytest.fixture
-    def noisy_in(self, device: str) -> torch.Tensor:
-        return torch.load("tests/data/noisy_in.pth", map_location=device)
-
     def test_inference(self, inference: InferenceStage, noisy_in: torch.Tensor):
         mask = inference(noisy_in)
 

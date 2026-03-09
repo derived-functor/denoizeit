@@ -1,0 +1,81 @@
+"""Preprocessing functions"""
+
+from pathlib import Path
+import torch
+import torchaudio
+
+from src.pipeline.abc import Stage
+
+
+def _preprocess(
+    wav_path: str | Path,
+    target_sr: int,
+    n_fft: int,
+    hop_len: int,
+    device: str,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Preprocessing function
+
+    1. Resamples audio to target_sr
+    2. Mixing the channels to 1 by meaning.
+    3. Normalizes volume to 1.0 to avoid clipping.
+    4. Performs STFT and cuts off 257-th bin of spectrogram.
+
+    return noisy spectrogram and window
+    """
+    wav, sr = torchaudio.load(wav_path)
+
+    # Resample sample rate
+    if sr != target_sr:
+        wav = torchaudio.functional.resample(wav, sr, target_sr)
+
+    # Transform to mono
+    if wav.shape[0] > 1:
+        wav = torch.mean(wav, dim=0, keepdim=True)
+
+    # Normalization to avoid clipping
+    if (max_ := wav.abs().max()) > 1.0:
+        # Adding 1e-8 to avoid zero division
+        wav = wav / (max_ + 1e-8)
+
+    wav = wav.to(device)
+
+    # Adding batch dimension
+    wav = wav.unsqueeze(0)
+
+    win = torch.hann_window(n_fft).to(device)
+
+    noisy_spec = torch.stft(
+        wav.squeeze(1), n_fft=n_fft, hop_length=hop_len, window=win, return_complex=True
+    )
+    # Cutoff the 257-th bin
+    noisy_in = noisy_spec.unsqueeze(1)[:, :, :256, :]
+
+    return noisy_in, win
+
+
+class PreprocessStage(Stage[str | Path, tuple[torch.Tensor, torch.Tensor]]):
+    """Preprocessing stage of pipeline
+
+    1. Resamples audio to target_sr
+    2. Mixing the channels to 1 by meaning.
+    3. Normalizes volume to 1.0 to avoid clipping.
+    4. Performs STFT and cuts off 257-th bin of spectrogram.
+    """
+
+    def __init__(self, target_sr: int, n_fft: int, hop_len: int, device: str) -> None:
+        self.target_sr = target_sr
+        self.n_fft = n_fft
+        self.hop_len = hop_len
+        self.device = device
+
+        super().__init__(self._run)
+
+    def _run(self, wav_path: str | Path) -> tuple[torch.Tensor, torch.Tensor]:
+        return _preprocess(
+            wav_path,
+            self.target_sr,
+            self.n_fft,
+            self.hop_len,
+            self.device,
+        )

@@ -51,7 +51,7 @@ def process_short_file(
         pipeline = DenoisingShortFilePipeline(model, config)
 
         progress.update(task, completed=75, description="Running pipeline")
-        denoised = pipeline(wav_path)
+        denoised = pipeline(wav_path).cpu()
 
         torchaudio.save(output_file, denoised, config.preprocessing.target_sr)
         progress.update(task, completed=100, description="Saving audio")

@@ -1,7 +1,9 @@
+import torch
 from pathlib import Path
-from typer.testing import CliRunner
 from unittest.mock import MagicMock, patch
+from typer.testing import CliRunner
 from src.cli.cli import app
+from src.config import Config, PreprocessingConfig, Common
 
 runner = CliRunner()
 
@@ -27,14 +29,15 @@ class TestCli:
         noisy_audio = tmp_path / "noisy.wav"
         noisy_audio.write_text("fake audio")
 
-        mock_config = MagicMock()
-        mock_config.common.model_checkpoint = "dummy.pth"
-        mock_config.common.device = "cpu"
-        mock_config.preprocessing.target_sr = 16000
-        mock_get_config.return_value = mock_config
+        real_config = Config(
+            preprocessing=PreprocessingConfig(target_sr=16000, n_fft=512, hop_len=160),
+            common=Common(device="cpu", model_checkpoint="data/checkpoint.pth"),
+        )
+        mock_get_config.return_value = real_config
 
+        fake_tensor = torch.zeros(1, 16000)
         mock_pipeline = MagicMock()
-        mock_pipeline.return_value = "tensor_result"
+        mock_pipeline.return_value = fake_tensor
         mock_pipeline_class.return_value = mock_pipeline
 
         result = runner.invoke(

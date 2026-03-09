@@ -42,7 +42,14 @@ class TestCli:
 
         result = runner.invoke(
             app,
-            [str(noisy_audio), "--out", "test_out.wav", "--config", str(config_file)],
+            [
+                "process",
+                str(noisy_audio),
+                "--out",
+                "test_out.wav",
+                "--config",
+                str(config_file),
+            ],
         )
 
         assert result.exit_code == 0

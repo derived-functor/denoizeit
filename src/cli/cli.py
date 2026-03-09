@@ -16,11 +16,28 @@ from src.config import get_config
 from src.pipeline import DenoisingShortFilePipeline
 from src.model.unet import UNet
 
+
+LOGO = r"""
+         _                      _             _  _    _ 
+        | |                    (_)           (_)| |  | |
+      __| |  ___  _ __    ___   _  ____  ___  _ | |_ | |
+     / _` | / _ \| '_ \  / _ \ | ||_  / / _ \| || __|| |
+    | (_| ||  __/| | | || (_) || | / / |  __/| || |_ |_|
+     \__,_| \___||_| |_| \___/ |_|/___| \___||_| \__|(_)
+
+    """
+
 app = typer.Typer(name="denoizeit!", help="Denoize audio files")
 
 
+@app.callback()
+def main():
+    """Callback function before commands"""
+    typer.secho(LOGO, fg=typer.colors.CYAN, bold=True)
+
+
 @app.command()
-def process_short_file(
+def process(
     wav_path: Path = typer.Argument(..., help="Path to noisy file", exists=True),
     output_file: Path = typer.Option(
         "denoized.wav", "--out", "-o", help="Name of output file"

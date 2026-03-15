@@ -26,5 +26,6 @@ pkgs.mkShell {
     export CUDA_PATH=${cuda.cudatoolkit}
     
     echo "CUDA 12.8 environment loaded."
+    exec ${pkgs.fish}/bin/fish
   '';
 }

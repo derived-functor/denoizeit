@@ -15,7 +15,7 @@ Audio denoising tool using a UNet model with PyTorch.
 ## Usage
 
 ```bash
-denoizeit path/to/noisy.wav -o denoised.wav
+denoizeit process path/to/noisy.wav -o denoised.wav
 ```
 
 ## Options
@@ -30,6 +30,7 @@ Configuration should be presented in yaml file of that structure:
 
 ```yaml
 preprocessing:
+  threshold: 10
   target_sr: 16000
   n_fft: 512
   hop_len: 160
@@ -41,3 +42,7 @@ common:
 > [!WARNING]
 > Don't change preprocessing settings if you're not using custom model checkpoint.
 > Default model was trained on that specific settings.
+> The only setting is here to change is `threshold`. It defines duration of audio
+> that will be processed at once. For example, if `threshold` is 10, then all audio
+> files that shorter than 10 sec will be loaded to model at once, other files
+> will use batching

@@ -2,7 +2,12 @@ import pytest
 from pathlib import Path
 import torch
 from src.config import Config
-from src.pipeline.preprocess import preprocess, load_wav, wav_to_spec
+from src.pipeline.preprocess import (
+    preprocess,
+    load_wav,
+    stream_audio_chunks,
+    wav_to_spec,
+)
 
 
 class TestPreprocessStage:
@@ -53,3 +58,35 @@ class TestPreprocessStage:
         assert noisy_in.is_complex()
 
         assert not torch.isnan(noisy_in).any()
+
+    def test_stream_audio_chunks_properties(self, noisy_path: Path):
+        target_sr = 16000
+        chunk_size = 256
+        overlap = 64
+        hop_len = 160
+
+        expected_step = (chunk_size - overlap) * hop_len
+        expected_chunk_samples = chunk_size * hop_len  # 40960
+
+        gen = stream_audio_chunks(
+            noisy_path,
+            target_sr=target_sr,
+            chunk_size_frames=chunk_size,
+            overlap_frames=overlap,
+            hop_len=hop_len,
+        )
+
+        chunks = list(gen)
+
+        assert len(chunks) > 0
+
+        first_chunk, info = chunks[0]
+        assert first_chunk.shape == (1, expected_chunk_samples)
+        assert info["start_sample"] == 0
+
+        if len(chunks) > 1:
+            _, info_next = chunks[1]
+            assert info_next["start_sample"] == expected_step
+
+        _, last_info = chunks[-1]
+        assert last_info["is_last"] is True

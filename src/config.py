@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings
 class PreprocessingConfig(BaseModel):
     """Config for preprocessing"""
 
+    threshold: float
     target_sr: int
     n_fft: int
     hop_len: int

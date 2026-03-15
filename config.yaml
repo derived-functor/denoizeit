@@ -1,4 +1,5 @@
 preprocessing:
+  threshold: 2
   target_sr: 16000
   n_fft: 512
   hop_len: 160

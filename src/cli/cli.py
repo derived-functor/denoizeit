@@ -13,8 +13,8 @@ import torchaudio
 import typer
 
 from src.config import get_config
-from src.pipeline import DenoisingShortFilePipeline
 from src.model.unet import UNet
+from src.utils import get_pipeline
 
 
 LOGO = r"""
@@ -65,9 +65,13 @@ def process(
         model = model.to(config.common.device)
         progress.update(task, completed=50, description="Loaded model")
 
-        pipeline = DenoisingShortFilePipeline(model, config)
+        pipeline, _ = get_pipeline(wav_path, model, config)
 
-        progress.update(task, completed=75, description="Running pipeline")
+        progress.update(
+            task,
+            completed=75,
+            description=f"Running pipeline ({pipeline.__class__.__name__})",
+        )
         denoised = pipeline(wav_path).cpu()
 
         torchaudio.save(output_file, denoised, config.preprocessing.target_sr)

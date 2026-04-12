@@ -1,12 +1,12 @@
 """Preprocessing functions"""
 
 from collections.abc import Generator
-
 from pathlib import Path
 from typing import Any
+
 import torch
-from torchcodec.decoders import AudioDecoder
 import torchaudio
+from torchcodec.decoders import AudioDecoder
 
 
 def transform_wav(wav: torch.Tensor, sr: int, target_sr: int) -> torch.Tensor:

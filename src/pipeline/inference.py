@@ -1,6 +1,7 @@
 """Inference stage"""
 
 import torch
+
 from src.model.unet import UNet
 
 

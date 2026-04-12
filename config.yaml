@@ -5,4 +5,8 @@ preprocessing:
   hop_len: 160
 common:
   device: cuda
-  model_checkpoint: data/checkpoint.pth
+model_checkpoint:
+  hf:
+    repo_id: derived-functor/denoizeit-unet
+    filename: model.pth
+  local: data/checkpoint.pth

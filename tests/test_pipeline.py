@@ -1,10 +1,12 @@
+from pathlib import Path
+
 import pytest
-import torchaudio
 import torch
+import torchaudio
+
 from src.config import Config
 from src.model.unet import UNet
 from src.pipeline.pipeline import DenoisingLongFilePipeline, DenoisingShortFilePipeline
-from pathlib import Path
 
 
 class TestDenoisingPipeline:

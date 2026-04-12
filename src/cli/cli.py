@@ -1,21 +1,21 @@
 """Main CLI logic"""
 
 from pathlib import Path
-from rich.progress import (
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    BarColumn,
-    TaskProgressColumn,
-)
-import torch
+
 import torchaudio
 import typer
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+)
 
-from src.config import get_config
-from src.model.unet import UNet
+from src.config import DEFAULT_CONFIG_PATH, get_config
+from src.model_factory.hf import HuggingFaceModelFactory
+from src.model_factory.local_fs import LocalModelFactory
 from src.utils import get_pipeline
-
 
 LOGO = r"""
          _                      _             _  _    _ 
@@ -43,7 +43,10 @@ def process(
         "denoized.wav", "--out", "-o", help="Name of output file"
     ),
     config_path: Path = typer.Option(
-        "config.yaml", "--config", "-c", help="Configuration file"
+        f"{DEFAULT_CONFIG_PATH}/config.yaml",
+        "--config",
+        "-c",
+        help="Configuration file",
     ),
 ) -> None:
     """Command for denoising audio files"""
@@ -58,10 +61,17 @@ def process(
         config = get_config(config_path)
         progress.update(task, completed=25, description="Loaded config")
 
-        model = UNet()
-        model.load_state_dict(
-            torch.load(config.common.model_checkpoint, weights_only=True),
-        )
+        if hf := config.model_checkpoint.hf:
+            model = HuggingFaceModelFactory.load(
+                hf.repo_id,
+                filename=hf.filename,
+                cache_dir=config.cache_dir,
+            )
+        elif local := config.model_checkpoint.local:
+            model = LocalModelFactory.load(local)
+        else:
+            raise ValueError("No proper model checkpoint provided")
+
         model = model.to(config.common.device)
         progress.update(task, completed=50, description="Loaded model")
 

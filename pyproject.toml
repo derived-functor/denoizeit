@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "complexpytorch>=0.4",
+    "huggingface-hub>=1.10.1",
     "numpy>=2.2.6",
     "pydantic-settings>=2.13.1",
     "rich>=14.3.3",
@@ -29,7 +30,12 @@ dev = [
     "black",
     "isort",
     "pip>=26.0.1",
+    "ruff>=0.15.10",
 ]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B615"]
 
 [tool.coverage.run]
 omit = [

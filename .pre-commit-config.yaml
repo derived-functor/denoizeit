@@ -19,6 +19,6 @@ repos:
     hooks:
       - id: bandit
         name: Run bandit security
-        entry: uv run bandit -r src/
+        entry: uv run bandit -c pyproject.toml -r src/
         language: system
         pass_filenames: false

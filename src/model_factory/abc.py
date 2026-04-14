@@ -20,9 +20,9 @@ class ModelFactory(ABC):
         """Main method for loading model"""
 
     @classmethod
-    def _load_pth(cls, path: str | Path) -> UNet:
+    def _load_pth(cls, path: str | Path, device: str) -> UNet:
         """Loads model's weights from .pth file"""
-        weights = torch.load(path, weights_only=True)
+        weights = torch.load(path, weights_only=True, map_location=device)
 
         model = UNet()
         model.load_state_dict(weights)
@@ -32,17 +32,17 @@ class ModelFactory(ABC):
         return model
 
     @classmethod
-    def _load_safetensors(cls, path: str | Path) -> UNet:
+    def _load_safetensors(cls, path: str | Path, device: str) -> UNet:
         """Loads model weights from safetensors type of file"""
         raise NotImplementedError("safetensors library is not supported yet")
 
     @classmethod
-    def _load(cls, path: Path) -> UNet:
+    def _load(cls, path: Path, device: str = "cpu") -> UNet:
         if "pth" in path.suffix:
-            return cls._load_pth(path)
+            return cls._load_pth(path, device)
 
         if "safetensors" in path.suffix:  # pylint: disable=R1705
-            return cls._load_safetensors(path)
+            return cls._load_safetensors(path, device)
 
         else:
             raise ValueError(

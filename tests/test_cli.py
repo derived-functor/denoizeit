@@ -82,6 +82,7 @@ class TestCliWithHuggingFace:
             "derived-functor/denoizeit-unet",
             filename="model.pth",
             cache_dir="/tmp/hf_cache",
+            device="cpu"
         )
 
         mock_get_pipeline.assert_called_once()
@@ -150,7 +151,7 @@ class TestCliWithLocalModel:
         assert result.exit_code == 0
         assert "Denoised audio saved to test_out.wav" in result.stdout
 
-        mock_factory.load.assert_called_once_with("data/checkpoint.pth")
+        mock_factory.load.assert_called_once_with("data/checkpoint.pth", device="cpu")
 
         mock_get_pipeline.assert_called_once()
 

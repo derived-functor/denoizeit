@@ -66,9 +66,10 @@ def process(
                 hf.repo_id,
                 filename=hf.filename,
                 cache_dir=config.cache_dir,
+                device=config.common.device
             )
         elif local := config.model_checkpoint.local:
-            model = LocalModelFactory.load(local)
+            model = LocalModelFactory.load(local, device=config.common.device)
         else:
             raise ValueError("No proper model checkpoint provided")
 

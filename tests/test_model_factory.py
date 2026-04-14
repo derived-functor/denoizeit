@@ -14,7 +14,7 @@ class TestModelFactoryBase:
     def test_load_pth_success(
         self, temp_pth_file: Path, mock_model_weights: dict[str, torch.Tensor]
     ):
-        model = ModelFactory._load_pth(temp_pth_file)
+        model = ModelFactory._load_pth(temp_pth_file, "cpu")
         assert isinstance(model, UNet)
         assert model.state_dict().keys() == mock_model_weights.keys()
 
@@ -22,17 +22,17 @@ class TestModelFactoryBase:
         with pytest.raises(
             NotImplementedError, match="safetensors library is not supported yet"
         ):
-            ModelFactory._load_safetensors(Path("dummy.safetensors"))
+            ModelFactory._load_safetensors(Path("dummy.safetensors"), "cpu")
 
     def test_load_unknown_extension_raises(self):
         with pytest.raises(ValueError, match="Filetype of .* not known"):
-            ModelFactory._load(Path("model.bin"))
+            ModelFactory._load(Path("model.bin"), "cpu")
 
     def test_load_pth_invalid_file_raises(self, tmp_path: Path):
         invalid_file = tmp_path / "corrupted.pth"
         invalid_file.write_bytes(b"not a valid pth file")
         with pytest.raises(Exception):
-            ModelFactory._load_pth(invalid_file)
+            ModelFactory._load_pth(invalid_file, "cpu")
 
 
 class TestLocalModelFactory:

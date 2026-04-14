@@ -14,6 +14,7 @@ class LocalModelFactory(ModelFactory):
     @classmethod
     def load(cls, path: str | Path, **kwargs: Any) -> UNet:
         path = path if isinstance(path, Path) else Path(path)
+        device = kwargs.get("device", "cpu")
 
         if not path.exists():
             raise ValueError(f"File {path} doen't exists")
@@ -21,4 +22,4 @@ class LocalModelFactory(ModelFactory):
         if cls._model:
             return cls._model
 
-        return cls._load(path)
+        return cls._load(path, device)

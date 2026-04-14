@@ -29,6 +29,7 @@ class HuggingFaceModelFactory(ModelFactory):
         if cls._model:
             return cls._model
 
+        device = kwargs.get("device", "cpu")
         load_params = cls._parse_kwargs(kwargs)
         load_params.repo_id = path
 
@@ -38,7 +39,7 @@ class HuggingFaceModelFactory(ModelFactory):
             )
             model_path_ = Path(model_path)
 
-            return cls._load(model_path_)
+            return cls._load(model_path_, device=device)
 
         except Exception as e:
             msg = "Error while loading weights"

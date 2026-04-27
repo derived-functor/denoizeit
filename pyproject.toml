@@ -13,6 +13,7 @@ dependencies = [
     "numpy>=2.2.6",
     "pydantic-settings>=2.13.1",
     "rich>=14.3.3",
+    "safetensors>=0.7.0",
     "sounddevice>=0.5.5",
     "torch>=2.10.0",
     "torchaudio>=2.10.0",

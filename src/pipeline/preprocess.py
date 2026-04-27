@@ -45,9 +45,9 @@ def wav_to_spec(
     """Transforms wav to spectrogram"""
 
     # Adding batch dimension
-    wav = wav.unsqueeze(0)
+    wav = wav.unsqueeze(0).to(device)
 
-    win = torch.hann_window(n_fft).to(device)
+    win = torch.hann_window(n_fft, device=device)
 
     noisy_spec = torch.stft(
         wav.squeeze(1), n_fft=n_fft, hop_length=hop_len, window=win, return_complex=True

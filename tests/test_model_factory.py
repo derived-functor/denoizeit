@@ -18,11 +18,12 @@ class TestModelFactoryBase:
         assert isinstance(model, UNet)
         assert model.state_dict().keys() == mock_model_weights.keys()
 
-    def test_load_safetensors_raises(self):
-        with pytest.raises(
-            NotImplementedError, match="safetensors library is not supported yet"
-        ):
-            ModelFactory._load_safetensors(Path("dummy.safetensors"), "cpu")
+    def test_load_safetensors_success(
+        self, temp_safetensors_file: Path, mock_model_weights: dict[str, torch.Tensor]
+    ):
+        model = ModelFactory._load_safetensors(temp_safetensors_file, "cpu")
+        assert isinstance(model, UNet)
+        assert model.state_dict().keys() == mock_model_weights.keys()
 
     def test_load_unknown_extension_raises(self):
         with pytest.raises(ValueError, match="Filetype of .* not known"):
@@ -63,12 +64,12 @@ class TestLocalModelFactory:
         model2 = LocalModelFactory.load(temp_pth_file2)
         assert model1 is not model2
 
-    def test_load_safetensors_routes_correctly(self, temp_safetensors_file: Path):
+    def test_load_safetensors_routes_correctly(
+        self, temp_safetensors_file: Path, mock_model_weights: dict[str, torch.Tensor]
+    ):
         LocalModelFactory._model = None
-        with pytest.raises(
-            NotImplementedError, match="safetensors library is not supported yet"
-        ):
-            LocalModelFactory.load(temp_safetensors_file)
+        model = LocalModelFactory.load(temp_safetensors_file)
+        assert isinstance(model, UNet)
 
 
 class TestHuggingFaceModelFactory:

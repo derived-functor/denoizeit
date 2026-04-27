@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import torch
+from safetensors.torch import load_file
 
 from src.model.unet import UNet
 
@@ -34,7 +35,15 @@ class ModelFactory(ABC):
     @classmethod
     def _load_safetensors(cls, path: str | Path, device: str) -> UNet:
         """Loads model weights from safetensors type of file"""
-        raise NotImplementedError("safetensors library is not supported yet")
+
+        weights = load_file(path, device=device)
+
+        model = UNet()
+        model.load_state_dict(weights)
+
+        cls._model = model
+
+        return model
 
     @classmethod
     def _load(cls, path: Path, device: str = "cpu") -> UNet:

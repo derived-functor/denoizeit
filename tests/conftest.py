@@ -55,7 +55,11 @@ def temp_pth_file(tmp_path: Path, mock_model_weights: dict[str, torch.Tensor]) -
 
 
 @pytest.fixture
-def temp_safetensors_file(tmp_path: Path) -> Path:
+def temp_safetensors_file(
+    tmp_path: Path, mock_model_weights: dict[str, torch.Tensor]
+) -> Path:
+    from safetensors.torch import save_file
+
     p = tmp_path / "model.safetensors"
-    p.write_bytes(b"dummy safetensors content")
+    save_file(mock_model_weights, str(p))
     return p

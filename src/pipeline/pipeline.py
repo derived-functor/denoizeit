@@ -7,9 +7,10 @@ import torch
 
 from src.config import PreprocessingConfig
 from src.model.unet import UNet
-from .preprocess import preprocess, stream_audio_chunks, wav_to_spec
+
 from .inference import inference
 from .postprocess import postprocess
+from .preprocess import preprocess, stream_audio_chunks, wav_to_spec
 
 
 class Pipeline(ABC):

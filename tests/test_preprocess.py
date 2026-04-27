@@ -1,10 +1,12 @@
-import pytest
 from pathlib import Path
+
+import pytest
 import torch
+
 from src.config import Config
 from src.pipeline.preprocess import (
-    preprocess,
     load_wav,
+    preprocess,
     stream_audio_chunks,
     wav_to_spec,
 )

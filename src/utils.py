@@ -1,6 +1,7 @@
 """Some useful utils"""
 
 from pathlib import Path
+
 from torchcodec.decoders import AudioDecoder
 
 from src.config import Config

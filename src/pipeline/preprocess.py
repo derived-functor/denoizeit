@@ -1,12 +1,12 @@
 """Preprocessing functions"""
 
 from collections.abc import Generator
-
 from pathlib import Path
 from typing import Any
+
 import torch
-from torchcodec.decoders import AudioDecoder
 import torchaudio
+from torchcodec.decoders import AudioDecoder
 
 
 def transform_wav(wav: torch.Tensor, sr: int, target_sr: int) -> torch.Tensor:
@@ -45,9 +45,9 @@ def wav_to_spec(
     """Transforms wav to spectrogram"""
 
     # Adding batch dimension
-    wav = wav.unsqueeze(0)
+    wav = wav.unsqueeze(0).to(device)
 
-    win = torch.hann_window(n_fft).to(device)
+    win = torch.hann_window(n_fft, device=device)
 
     noisy_spec = torch.stft(
         wav.squeeze(1), n_fft=n_fft, hop_length=hop_len, window=win, return_complex=True

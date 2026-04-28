@@ -1,0 +1,12 @@
+{
+    "include": ["src"],
+    "exclude": [
+        "venv",
+        "**/__pycache__",
+        "**/node_modules",
+        "**/.*"
+    ],
+    "typeCheckingMode": "strict",
+    "reportMissingTypeStubs": "warning",
+    "reportImplicitStringConcatenation": "error",
+}

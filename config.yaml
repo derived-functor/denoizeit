@@ -1,0 +1,12 @@
+preprocessing:
+  threshold: 2
+  target_sr: 16000
+  n_fft: 512
+  hop_len: 160
+common:
+  device: cpu
+model_checkpoint:
+  hf:
+    repo_id: derived-functor/denoizeit-unet
+    filename: model.pth
+  local: data/checkpoint.pth

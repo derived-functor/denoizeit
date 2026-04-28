@@ -1,0 +1,9 @@
+**.pyc
+__pycache__
+*.env
+init_tests.sh
+uv.lock
+.venv
+.coverage
+*.egg-info
+.ruff_cache

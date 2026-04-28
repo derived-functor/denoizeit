@@ -59,16 +59,17 @@ def process(
     ) as progress:
         task = progress.add_task("Denoising", total=100)
         config = get_config(config_path)
-        progress.update(task, completed=25, description="Loaded config")
 
         if hf := config.model_checkpoint.hf:
+            progress.update(task, completed=25, description="Loading config (HF)")
             model = HuggingFaceModelFactory.load(
                 hf.repo_id,
                 filename=hf.filename,
                 cache_dir=config.cache_dir,
-                device=config.common.device
+                device=config.common.device,
             )
         elif local := config.model_checkpoint.local:
+            progress.update(task, completed=25, description="Loading config (Local)")
             model = LocalModelFactory.load(local, device=config.common.device)
         else:
             raise ValueError("No proper model checkpoint provided")

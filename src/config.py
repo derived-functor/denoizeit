@@ -35,7 +35,7 @@ class HuggingFaceCheckpoint(BaseModel):
 class ModelCheckpoint(BaseModel):
     """Config for model checkpoint"""
 
-    hf: HuggingFaceCheckpoint | None
+    hf: HuggingFaceCheckpoint | None = None
     local: str | None
 
 
